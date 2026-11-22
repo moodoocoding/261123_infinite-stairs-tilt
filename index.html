@@ -536,7 +536,7 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
             try {
                 const protocol = window.location?.protocol;
                 if (protocol === 'content:' || protocol === 'file:') {
-                    setSensorStatus('needs-https', '다운로드한 파일로 열면 센서 접근이 제한될 수 있어요. GitHub Pages의 HTTPS 게임 주소를 Chrome·삼성 인터넷에서 직접 열어 주세요. 방향 버튼으로도 플레이할 수 있어요.');
+                    setSensorStatus('needs-https', '다운로드한 파일로 열면 센서 접근이 제한될 수 있어요. Vercel의 HTTPS 게임 주소를 Chrome·삼성 인터넷에서 직접 열어 주세요. 방향 버튼으로도 플레이할 수 있어요.');
                     return;
                 }
                 if (!window.isSecureContext) {
