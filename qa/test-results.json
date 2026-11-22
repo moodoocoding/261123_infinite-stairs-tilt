@@ -1,0 +1,84 @@
+{
+  "type": "synthetic sensor/game integration tests",
+  "physicalDeviceTested": false,
+  "passed": 19,
+  "total": 19,
+  "results": [
+    {
+      "name": "Concurrent motion events cannot overwrite fresh orientation readings",
+      "passed": true
+    },
+    {
+      "name": "Starting posture calibrates to neutral and does not auto-climb",
+      "passed": true
+    },
+    {
+      "name": "Positive/negative physical tilts climb right/left stairs",
+      "passed": true
+    },
+    {
+      "name": "Neutral jitter does not move character",
+      "passed": true
+    },
+    {
+      "name": "Gravity fallback has the same sign as orientation in all screen rotations",
+      "passed": true
+    },
+    {
+      "name": "Orientation handles both landscape directions and upside-down portrait",
+      "passed": true
+    },
+    {
+      "name": "Invalid, null, NaN and missing readings never activate sensors",
+      "passed": true
+    },
+    {
+      "name": "Stale readings stop movement; reconnection recalibrates",
+      "passed": true
+    },
+    {
+      "name": "Restart resets tilt, cooldown and neutral state",
+      "passed": true
+    },
+    {
+      "name": "Screen rotation pauses and recalibrates",
+      "passed": true
+    },
+    {
+      "name": "No-signal timeout leaves manual controls usable",
+      "passed": true
+    },
+    {
+      "name": "Both permission requests start within the initial click; partial grant works",
+      "passed": true
+    },
+    {
+      "name": "Denied permissions show fallback status",
+      "passed": true
+    },
+    {
+      "name": "Downloaded Android files and insecure origins explain HTTPS instead of retrying",
+      "passed": true
+    },
+    {
+      "name": "Reconnect does not register duplicate event handlers",
+      "passed": true
+    },
+    {
+      "name": "Keyboard arrows work and repeated keydown is ignored",
+      "passed": true
+    },
+    {
+      "name": "Swipe release does not create a second step; pointer cancellation clears state",
+      "passed": true
+    },
+    {
+      "name": "Calibration pauses stamina and background tabs do not advance game",
+      "passed": true
+    },
+    {
+      "name": "Blocked local storage does not break start or game over",
+      "passed": true
+    }
+  ]
+}

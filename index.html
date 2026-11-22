@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>무한의 계단 - 기울기 센서 에디션</title>
+    <style>
+/* All styles are embedded; no CSS framework or remote fonts are required. */
+*,:before,:after{box-sizing:border-box;border:0 solid #e5e7eb}
+body,h1,h2,p{margin:0}button{font:inherit;background:none;color:inherit;padding:0}
+button:focus-visible{outline:3px solid #fff;outline-offset:4px}
+b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
+@keyframes bounce{0%,100%{transform:translateY(-15%)}50%{transform:translateY(0)}}
+.space-y-2\.5>:not(:first-child){margin-top:.625rem}
+.hidden{display:none!important}
+@media(prefers-reduced-motion:reduce){.animate-bounce{animation:none}}
+[class~="absolute"]{position:absolute}
+[class~="active:bg-amber-300"]:active{background-color:#fcd34d}
+[class~="animate-bounce"]{animation:bounce 1s infinite}
+[class~="backdrop-blur-md"]{backdrop-filter:blur(12px)}
+[class~="backdrop-blur-sm"]{backdrop-filter:blur(4px)}
+[class~="backdrop-blur-xs"]{backdrop-filter:blur(2px)}
+[class~="bg-amber-200/90"]{background-color:rgba(253,230,138,.9)}
+[class~="bg-amber-400"]{background-color:#fbbf24}
+[class~="bg-amber-950"]{background-color:#451a03}
+[class~="bg-emerald-500"]{background-color:#10b981}
+[class~="bg-gradient-to-r"]{background-image:linear-gradient(to right,#ea580c,#ef4444)}
+[class~="bg-red-600"]{background-color:#dc2626}
+[class~="bg-sky-300"]{background-color:#7dd3fc}
+[class~="bg-sky-500"]{background-color:#0ea5e9}
+[class~="bg-slate-700"]{background-color:#334155}
+[class~="bg-slate-800"]{background-color:#1e293b}
+[class~="bg-slate-800/90"]{background-color:rgba(30,41,59,.9)}
+[class~="bg-slate-900"]{background-color:#0f172a}
+[class~="bg-slate-900/65"]{background-color:rgba(15,23,42,.65)}
+[class~="bg-slate-900/75"]{background-color:rgba(15,23,42,.75)}
+[class~="bg-slate-900/85"]{background-color:rgba(15,23,42,.85)}
+[class~="bg-white/50"]{background-color:rgba(255,255,255,.5)}
+[class~="block"]{display:block}
+[class~="border"]{border-width:1px}
+[class~="border-0"]{border-width:0px}
+[class~="border-2"]{border-width:2px}
+[class~="border-4"]{border-width:4px}
+[class~="border-amber-200"]{border-color:#fde68a}
+[class~="border-amber-300"]{border-color:#fcd34d}
+[class~="border-amber-400/40"]{border-color:rgba(251,191,36,.4)}
+[class~="border-amber-800"]{border-color:#92400e}
+[class~="border-b"]{border-bottom-width:1px}
+[class~="border-emerald-200"]{border-color:#a7f3d0}
+[class~="border-sky-200"]{border-color:#bae6fd}
+[class~="border-slate-600"]{border-color:#475569}
+[class~="border-slate-700"]{border-color:#334155}
+[class~="border-white/25"]{border-color:rgba(255,255,255,.25)}
+[class~="bottom-0"]{bottom:0rem}
+[class~="bottom-4"]{bottom:1rem}
+[class~="cursor-pointer"]{cursor:pointer}
+[class~="duration-75"]{transition-duration:75ms}
+[class~="flex"]{display:flex}
+[class~="flex-col"]{flex-direction:column}
+[class~="font-black"]{font-weight:900}
+[class~="font-bold"]{font-weight:700}
+[class~="from-orange-600"]{--gradient-from:#ea580c}
+[class~="gap-1.5"]{gap:0.375rem}
+[class~="gap-2"]{gap:0.5rem}
+[class~="gap-3"]{gap:0.75rem}
+[class~="h-10"]{height:2.5rem}
+[class~="h-2.5"]{height:0.625rem}
+[class~="h-20"]{height:5rem}
+[class~="h-6"]{height:1.5rem}
+[class~="h-full"]{height:100%}
+[class~="h-screen"]{height:100vh;height:100dvh}
+[class~="hover:bg-emerald-400"]:hover{background-color:#34d399}
+[class~="hover:bg-sky-400"]:hover{background-color:#38bdf8}
+[class~="inset-0"]{inset:0}
+[class~="items-center"]{align-items:center}
+[class~="justify-around"]{justify-content:space-around}
+[class~="justify-between"]{justify-content:space-between}
+[class~="justify-center"]{justify-content:center}
+[class~="leading-relaxed"]{line-height:1.625}
+[class~="leading-tight"]{line-height:1.25}
+[class~="left-0"]{left:0rem}
+[class~="left-1/2"]{left:50%}
+[class~="max-w-[260px]"]{max-width:260px}
+[class~="max-w-md"]{max-width:28rem}
+[class~="max-w-xs"]{max-width:20rem}
+[class~="mb-2"]{margin-bottom:0.5rem}
+[class~="mb-3"]{margin-bottom:0.75rem}
+[class~="mb-4"]{margin-bottom:1rem}
+[class~="mb-6"]{margin-bottom:1.5rem}
+[class~="mb-7"]{margin-bottom:1.75rem}
+[class~="mt-0.5"]{margin-top:0.125rem}
+[class~="mt-1"]{margin-top:0.25rem}
+[class~="mt-2"]{margin-top:0.5rem}
+[class~="mt-3"]{margin-top:0.75rem}
+[class~="my-1"]{margin-top:0.25rem;margin-bottom:0.25rem}
+[class~="overflow-hidden"]{overflow:hidden}
+[class~="p-1"]{padding:0.25rem}
+[class~="p-4"]{padding:1rem}
+[class~="p-6"]{padding:1.5rem}
+[class~="pb-4"]{padding-bottom:1rem}
+[class~="pointer-events-auto"]{pointer-events:auto}
+[class~="pointer-events-none"]{pointer-events:none}
+[class~="pt-4"]{padding-top:1rem}
+[class~="px-10"]{padding-left:2.5rem;padding-right:2.5rem}
+[class~="px-3"]{padding-left:0.75rem;padding-right:0.75rem}
+[class~="px-4"]{padding-left:1rem;padding-right:1rem}
+[class~="px-5"]{padding-left:1.25rem;padding-right:1.25rem}
+[class~="px-9"]{padding-left:2.25rem;padding-right:2.25rem}
+[class~="py-1"]{padding-top:0.25rem;padding-bottom:0.25rem}
+[class~="py-1.5"]{padding-top:0.375rem;padding-bottom:0.375rem}
+[class~="py-4"]{padding-top:1rem;padding-bottom:1rem}
+[class~="relative"]{position:relative}
+[class~="right-0"]{right:0rem}
+[class~="rounded-2xl"]{border-radius:16px}
+[class~="rounded-3xl"]{border-radius:24px}
+[class~="rounded-full"]{border-radius:9999px}
+[class~="rounded-lg"]{border-radius:8px}
+[class~="rounded-xs"]{border-radius:2px}
+[class~="shadow"]{box-shadow:0 1px 3px #0003}
+[class~="shadow-2xl"]{box-shadow:0 25px 50px -12px #0008}
+[class~="shadow-[0_5px_0_#78350f]"]{box-shadow:0 5px 0 #78350f}
+[class~="shadow-[0_6px_0_#0369a1]"]{box-shadow:0 6px 0 #0369a1}
+[class~="shadow-[0_6px_0_#065f46]"]{box-shadow:0 6px 0 #065f46}
+[class~="shadow-md"]{box-shadow:0 4px 6px #0003}
+[class~="text-2xl"]{font-size:24px;line-height:32px}
+[class~="text-3xl"]{font-size:30px;line-height:36px}
+[class~="text-4xl"]{font-size:36px;line-height:40px}
+[class~="text-5xl"]{font-size:48px;line-height:1}
+[class~="text-6xl"]{font-size:60px;line-height:1}
+[class~="text-[11px]"]{font-size:11px}
+[class~="text-amber-300"]{color:#fcd34d}
+[class~="text-amber-400"]{color:#fbbf24}
+[class~="text-amber-950"]{color:#451a03}
+[class~="text-base"]{font-size:16px;line-height:24px}
+[class~="text-center"]{text-align:center}
+[class~="text-emerald-400"]{color:#34d399}
+[class~="text-left"]{text-align:left}
+[class~="text-red-600"]{color:#dc2626}
+[class~="text-rose-300"]{color:#fda4af}
+[class~="text-rose-400"]{color:#fb7185}
+[class~="text-sky-300"]{color:#7dd3fc}
+[class~="text-slate-200"]{color:#e2e8f0}
+[class~="text-slate-300"]{color:#cbd5e1}
+[class~="text-slate-400"]{color:#94a3b8}
+[class~="text-sm"]{font-size:14px;line-height:20px}
+[class~="text-white"]{color:#fff}
+[class~="text-xs"]{font-size:12px;line-height:16px}
+[class~="to-red-500"]{--gradient-to:#ef4444}
+[class~="top-0"]{top:0rem}
+[class~="tracking-tight"]{letter-spacing:-.025em}
+[class~="transition-all"]{transition:all 75ms ease}
+[class~="w-0.5"]{width:0.125rem}
+[class~="w-16"]{width:4rem}
+[class~="w-24"]{width:6rem}
+[class~="w-3"]{width:0.75rem}
+[class~="w-full"]{width:100%}
+[class~="w-px"]{width:1px}
+[class~="w-screen"]{width:100vw}
+[class~="z-20"]{z-index:20}
+[class~="z-30"]{z-index:30}
+@media(min-width:640px){[class~="sm:border-4"]{border-width:4px}}
+@media(min-width:640px){[class~="sm:h-[92vh]"]{height:92vh;height:92dvh}}
+@media(min-width:640px){[class~="sm:rounded-3xl"]{border-radius:24px}}
+@media(min-width:640px){[class~="sm:text-6xl"]{font-size:60px;line-height:1}}
+@media(min-width:640px){[class~="sm:text-base"]{font-size:16px;line-height:24px}}
+@media(min-width:640px){[class~="sm:text-sm"]{font-size:14px;line-height:20px}}
+        body {
+            font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            background-color: #1e293b;
+        }
+        .font-jua {
+            font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif; font-weight: 900;
+        }
+        .font-pixel {
+            font-family: ui-monospace, "Courier New", "Malgun Gothic", monospace; font-weight: 900;
+        }
+        /* 레트로 게임 스타일 외곽선 텍스트 */
+        .text-stroke {
+            text-shadow:
+                -3px -3px 0 #1e293b,
+                 3px -3px 0 #1e293b,
+                -3px  3px 0 #1e293b,
+                 3px  3px 0 #1e293b,
+                 0px  5px 0 #0f172a;
+        }
+        .btn-retro {
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        }
+        .btn-retro:active {
+            transform: translateY(4px);
+        }
+        #sensor-panel {
+            position: absolute; left: 12px; right: 12px; bottom: 108px;
+            z-index: 20; padding: 9px 12px; border-radius: 14px;
+            background: rgba(15, 23, 42, .88); color: white;
+            font-size: 12px; line-height: 1.5;
+        }
+        #sensor-panel button {
+            margin-top: 6px; padding: 5px 10px; border-radius: 8px;
+            background: #e0f2fe; color: #0c4a6e; font-weight: bold;
+            min-height: 36px; cursor: pointer;
+        }
+        #sensor-panel button:disabled { opacity: .6; }
+        #sensor-panel.hidden { display: none; }
+        #tilt-value { font-variant-numeric: tabular-nums; min-width: 3em; }
+        #start-overlay { overflow-y: auto; }
+        @media (max-height: 620px) {
+            #start-overlay { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen flex items-center justify-center bg-slate-900">
+
+    <!-- 세로형 모바일/태블릿 최적화 게임 컨테이너 -->
+    <div id="game-wrapper" class="relative w-full max-w-md h-full sm:h-[92vh] sm:rounded-3xl overflow-hidden shadow-2xl border-0 sm:border-4 border-slate-700 bg-sky-300">
+
+        <!-- 메인 게임 캔버스 -->
+        <canvas id="stairs-canvas" class="w-full h-full block"></canvas>
+
+        <!-- 상단 HUD (첨부 이미지 스타일: 레트로 게이지 바 + 큼지막한 계단 수 + 코인) -->
+        <header id="hud" class="hidden absolute top-0 left-0 right-0 pt-4 px-5 flex flex-col items-center z-20 pointer-events-none">
+            <!-- 상단 게이지 바 (시간/스태미나) -->
+            <div class="w-full max-w-[260px] h-6 bg-amber-950 p-1 rounded-lg border-4 border-amber-200 shadow-md mb-2">
+                <div id="stamina-bar" class="h-full bg-gradient-to-r from-orange-600 to-red-500 rounded-xs transition-all duration-75" style="width: 100%;"></div>
+            </div>
+
+            <!-- 현재 오른 계단 수 (큼지막한 흰색 볼드 숫자) -->
+            <div id="step-count" class="font-pixel text-5xl sm:text-6xl text-white text-stroke tracking-tight my-1">
+                0
+            </div>
+
+            <!-- 기울기 센서 인디케이터 & 코인 표시 -->
+            <div class="w-full flex items-center justify-between mt-1">
+                <!-- 실시간 기울기 게이지 -->
+                <div class="bg-slate-900/75 backdrop-blur-xs text-white px-3 py-1 rounded-full border border-white/25 flex items-center gap-2 text-xs font-bold">
+                    <span>📱 기울기 <span id="tilt-value">0°</span></span>
+                    <div class="w-16 h-2.5 bg-slate-700 rounded-full relative overflow-hidden">
+                        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-white/50"></div>
+                        <div id="tilt-dot" class="absolute top-0 bottom-0 w-3 bg-amber-400 rounded-full transition-all duration-75" style="left: calc(50% - 6px);"></div>
+                    </div>
+                </div>
+
+                <!-- 수집 코인 -->
+                <div class="bg-slate-900/75 backdrop-blur-xs text-amber-300 px-3 py-1 rounded-full border border-amber-400/40 flex items-center gap-1.5 font-jua text-base">
+                    <span>🪙</span>
+                    <span id="coin-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <section id="sensor-panel" class="hidden" aria-label="기울기 조작 상태">
+            <p id="live-sensor-status" role="status" aria-live="polite">센서 연결을 기다리는 중입니다.</p>
+            <button id="calibrate-btn" type="button">기준 자세 맞추기</button>
+        </section>
+
+        <!-- 하단 보조 터치 영역 (기울기 센서가 없는 PC나 미세 조정용 터치) -->
+        <div id="touch-fallback" class="hidden absolute bottom-4 left-0 right-0 px-4 flex justify-between items-center z-20 pointer-events-none">
+            <button id="btn-left-step" class="pointer-events-auto btn-retro w-24 h-20 rounded-2xl bg-amber-200/90 border-4 border-amber-800 shadow-[0_5px_0_#78350f] flex flex-col items-center justify-center active:bg-amber-300 cursor-pointer">
+                <span class="text-2xl text-red-600 font-black">↖</span>
+                <span class="font-jua text-xs text-amber-950">왼쪽으로</span>
+            </button>
+
+            <div class="bg-slate-900/65 text-white text-[11px] font-bold px-3 py-1.5 rounded-full text-center leading-tight">
+                좌·우로 기울이기<br>또는 방향 버튼
+            </div>
+
+            <button id="btn-right-step" class="pointer-events-auto btn-retro w-24 h-20 rounded-2xl bg-amber-200/90 border-4 border-amber-800 shadow-[0_5px_0_#78350f] flex flex-col items-center justify-center active:bg-amber-300 cursor-pointer">
+                <span class="text-2xl text-red-600 font-black">↗</span>
+                <span class="font-jua text-xs text-amber-950">오른쪽으로</span>
+            </button>
+        </div>
+
+        <!-- 1. 시작 화면 오버레이 -->
+        <div id="start-overlay" class="absolute inset-0 bg-slate-900/75 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-30">
+            <div class="bg-red-600 text-white font-jua text-sm px-4 py-1 rounded-full border-2 border-amber-300 mb-3 shadow">
+                📱 태블릿을 기울여 계단 오르기
+            </div>
+            <h1 class="font-jua text-5xl sm:text-6xl text-white text-stroke mb-3 leading-tight">
+                무한의 <span class="text-amber-400">계단</span>
+            </h1>
+            <p class="text-slate-200 text-sm sm:text-base max-w-xs mb-6 leading-relaxed">
+                스마트폰이나 태블릿을 <b class="text-amber-300">왼쪽·오른쪽</b>으로 기울이면 캐릭터가 계단을 성큼성큼 올라갑니다!<br>
+                발을 헛디디거나 위쪽 게이지가 다 닳기 전에 최대한 높이 올라가세요!
+            </p>
+
+            <!-- 기울기 조작 가이드 카드 -->
+            <div class="bg-slate-800/90 border-2 border-slate-600 rounded-2xl p-4 w-full max-w-xs mb-7 text-left space-y-2.5 text-xs sm:text-sm text-slate-200">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📱↙️</span>
+                    <div><b class="text-sky-300">왼쪽으로 기울이기:</b> 왼쪽 위 계단으로 점프!</div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">↘️📱</span>
+                    <div><b class="text-rose-300">오른쪽으로 기울이기:</b> 오른쪽 위 계단으로 점프!</div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚖️</span>
+                    <div><b class="text-amber-300">시작 자세:</b> 편한 자세로 잡고 잠시 멈추세요. 그 자세가 0°가 됩니다. 약 9° 기울이면 이동하고, 유지하면 연속으로 오릅니다.</div>
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn-retro font-jua text-3xl bg-emerald-500 hover:bg-emerald-400 text-white px-10 py-4 rounded-2xl border-4 border-emerald-200 shadow-[0_6px_0_#065f46] cursor-pointer flex items-center gap-2">
+                <span>게임 시작!</span>
+                <span>▲</span>
+            </button>
+            <p id="sensor-status" class="text-slate-400 text-xs mt-3">
+                시작하면 센서를 확인합니다. 센서가 없으면 방향 버튼·화살표 키로 조작하세요.
+            </p>
+        </div>
+
+        <!-- 2. 게임 오버 오버레이 -->
+        <div id="gameover-overlay" class="hidden absolute inset-0 bg-slate-900/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30">
+            <div id="gameover-emoji" class="text-6xl mb-2 animate-bounce">😵</div>
+            <h2 id="gameover-reason" class="font-jua text-4xl text-rose-400 text-stroke mb-2">
+                발을 헛디뎠어요!
+            </h2>
+            <p class="text-slate-300 text-sm mb-6">
+                아슬아슬한 계단 오르기 도전 결과입니다!
+            </p>
+
+            <div class="bg-slate-800 border-4 border-amber-300 rounded-3xl p-6 w-full max-w-xs mb-7 shadow-2xl">
+                <div class="mb-4 pb-4 border-b border-slate-700">
+                    <div class="text-xs text-slate-400 font-bold">도달한 계단 높이</div>
+                    <div class="font-pixel text-4xl text-white mt-2"><span id="final-steps">0</span>층</div>
+                </div>
+                <div class="flex justify-around">
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold">최고 기록</div>
+                        <div class="font-jua text-2xl text-amber-400 mt-0.5"><span id="best-steps">0</span>층</div>
+                    </div>
+                    <div class="h-10 w-px bg-slate-700"></div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold">모은 코인</div>
+                        <div class="font-jua text-2xl text-emerald-400 mt-0.5"><span id="final-coins">0</span>개</div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="restart-btn" class="btn-retro font-jua text-2xl bg-sky-500 hover:bg-sky-400 text-white px-9 py-4 rounded-2xl border-4 border-sky-200 shadow-[0_6px_0_#0369a1] cursor-pointer">
+                다시 도전하기 🔄
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        /**
+         * 무한의 계단 - 기울기 센서 에디션
+         * - 첨부 이미지의 레트로 픽셀 감성(붉은 후드 캐릭터, 파란 잔상 이펙트, 도트 블록 계단, 도시 배경, 상단 게이지) 재현
+         * - 스마트폰/태블릿 DeviceOrientation(gamma/beta) 기울기 센서를 이용한 좌/우 계단 오르기 조작
+         * - 센서 권한·화면 회전·시작 자세 보정, 미수신 시 수동 조작 지원
+         */
+
+        const canvas = document.getElementById('stairs-canvas');
+        const ctx = canvas.getContext('2d');
+        const wrapper = document.getElementById('game-wrapper');
+
+        // UI 요소
+        const hud = document.getElementById('hud');
+        const touchFallback = document.getElementById('touch-fallback');
+        const startOverlay = document.getElementById('start-overlay');
+        const gameoverOverlay = document.getElementById('gameover-overlay');
+        const staminaBar = document.getElementById('stamina-bar');
+        const stepCountEl = document.getElementById('step-count');
+        const coinCountEl = document.getElementById('coin-count');
+        const tiltDot = document.getElementById('tilt-dot');
+        const sensorStatusEl = document.getElementById('sensor-status');
+        const liveSensorStatus = document.getElementById('live-sensor-status');
+        const sensorPanel = document.getElementById('sensor-panel');
+        const tiltValue = document.getElementById('tilt-value');
+        const calibrateBtn = document.getElementById('calibrate-btn');
+
+        // 계단 블록 규격
+        const STEP_W = 68;
+        const STEP_H = 34;
+
+        // 게임 상태 변수
+        let isPlaying = false;
+        let isFalling = false;
+        let stairs = []; // { x, y, dir, hasCoin }
+        let currentStepIndex = 0;
+        let coinCount = 0;
+        let bestSteps = 0;
+        try { bestSteps = Math.max(0, Number(localStorage.getItem('infinite_stairs_best')) || 0); }
+        catch (_) { /* 저장소가 제한된 브라우저에서도 게임은 계속 실행 */ }
+
+        // 스태미나(시간 게이지)
+        let stamina = 100;
+        const MAX_STAMINA = 100;
+
+        // 캐릭터 상태 & 잔상 이펙트
+        const player = {
+            x: 0,
+            y: 0,
+            vy: 0,
+            facing: 1, // -1: 왼쪽, 1: 오른쪽
+            jumpAnim: 0, // 점프 모션 타이머
+            afterimages: [] // 첨부 이미지의 파란색 잔상 이펙트 배열
+        };
+
+        // 카메라 좌표 (부드러운 추적)
+        const camera = { x: 0, y: 0 };
+
+        // 기울기 센서 상태
+        let currentTiltAngle = 0; // 시작 자세를 기준으로 한 화면 좌우 기울기
+        let stepCooldown = 0;
+        let neutralReturned = true;
+        let sensorState = 'idle';
+        let sensorSource = null;
+        let sensorCheckTimeout = null;
+        let lastSampleAt = -Infinity;
+        let lastOrientationAt = -Infinity;
+        let filteredAngle = 0;
+        let neutralAngle = 0;
+        let calibration = null;
+        let sensorRequestBusy = false;
+        const SENSOR_STALE_MS = 1200;
+        const ORIENTATION_PRIORITY_MS = 700;
+
+        // 캔버스 리사이즈
+        function resizeCanvas() {
+            const rect = wrapper.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        // 파일에 포함된 Web Audio 효과음. 네트워크·오디오 파일이 필요하지 않다.
+        let audioContext = null;
+        function unlockAudio() {
+            try {
+                const Audio = window.AudioContext || window.webkitAudioContext;
+                if (!Audio) return null;
+                if (!audioContext) audioContext = new Audio();
+                if (audioContext.state === 'suspended') audioContext.resume().catch(() => {});
+                return audioContext;
+            } catch (_) { return null; }
+        }
+        function playSfx(type) {
+            try {
+                const audio = unlockAudio();
+                if (!audio || audio.state !== 'running') return;
+                const notes = [523.25, 587.33, 659.25, 783.99, 880, 1046.5];
+                const sequence = type === 'coin' ? [[659.25, 0, .07], [987.77, .06, .12]]
+                    : type === 'fall' ? [[392, 0, .09], [293.66, .09, .09], [220, .18, .2]]
+                    : [[notes[currentStepIndex % notes.length], 0, .08]];
+                const now = audio.currentTime;
+                for (const [frequency, offset, duration] of sequence) {
+                    const oscillator = audio.createOscillator();
+                    const gain = audio.createGain();
+                    const at = now + offset;
+                    oscillator.type = 'square';
+                    oscillator.frequency.value = frequency;
+                    gain.gain.setValueAtTime(0, at);
+                    gain.gain.linearRampToValueAtTime(.045, at + .005);
+                    gain.gain.exponentialRampToValueAtTime(.0001, at + duration);
+                    oscillator.connect(gain); gain.connect(audio.destination);
+                    oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+                    oscillator.start(at); oscillator.stop(at + duration + .01);
+                }
+            } catch (_) { /* 소리가 제한된 브라우저에서도 게임은 계속 실행 */ }
+        }
+
+        // 계단 경로 초기 생성 (최대 50칸 미리 생성)
+        function initStairs() {
+            stairs = [{ x: 0, y: 0, dir: 0, hasCoin: false }];
+            let curX = 0;
+            let curY = 0;
+            let curDir = Math.random() < 0.5 ? -1 : 1;
+
+            for (let i = 1; i <= 50; i++) {
+                // 32% 확률로 방향 전환, 나머지는 같은 방향으로 연속 상승
+                if (i > 2 && Math.random() < 0.32) {
+                    curDir *= -1;
+                }
+                curX += curDir * STEP_W;
+                curY -= STEP_H;
+                const hasCoin = (i % 5 === 0);
+                stairs.push({ x: curX, y: curY, dir: curDir, hasCoin });
+            }
+        }
+
+        // 올라갈수록 끝없이 계단 추가 생성
+        function ensureMoreStairs() {
+            while (stairs.length - currentStepIndex < 35) {
+                const last = stairs[stairs.length - 1];
+                let nextDir = last.dir;
+                if (Math.random() < 0.35) {
+                    nextDir *= -1;
+                }
+                const nextX = last.x + nextDir * STEP_W;
+                const nextY = last.y - STEP_H;
+                const hasCoin = (stairs.length % 5 === 0);
+                stairs.push({ x: nextX, y: nextY, dir: nextDir, hasCoin });
+            }
+        }
+
+        function setSensorStatus(state, message) {
+            sensorState = state;
+            sensorStatusEl.textContent = message;
+            liveSensorStatus.textContent = message;
+            calibrateBtn.textContent = state === 'needs-https' ? 'HTTPS 게임 주소에서 열어 주세요'
+                : ['waiting', 'calibrating', 'ready'].includes(state) ? '기준 자세 맞추기' : '센서 다시 연결';
+            calibrateBtn.disabled = state === 'needs-https';
+        }
+
+        function beginCalibration() {
+            calibration = { startedAt: null, sum: 0, count: 0 };
+            stepCooldown = 0.35;
+            neutralReturned = true;
+            updateTiltIndicator(0);
+            setSensorStatus('calibrating', '편한 자세로 잡고 잠시 멈추세요. 지금 자세를 0°로 맞춥니다.');
+        }
+
+        function detachSensors() {
+            window.removeEventListener('deviceorientation', handleOrientation, true);
+            window.removeEventListener('devicemotion', handleMotion, true);
+        }
+
+        // 두 권한 요청은 클릭 안에서, 첫 await 전에 시작한다.
+        async function enableTiltSensor() {
+            if (sensorRequestBusy) return;
+            sensorRequestBusy = true;
+            calibrateBtn.disabled = true;
+            detachSensors();
+            clearTimeout(sensorCheckTimeout);
+            sensorSource = null;
+            lastSampleAt = lastOrientationAt = -Infinity;
+            calibration = null;
+            updateTiltIndicator(0);
+            try {
+                const protocol = window.location?.protocol;
+                if (protocol === 'content:' || protocol === 'file:') {
+                    setSensorStatus('needs-https', '다운로드한 파일로 열면 센서 접근이 제한될 수 있어요. GitHub Pages의 HTTPS 게임 주소를 Chrome·삼성 인터넷에서 직접 열어 주세요. 방향 버튼으로도 플레이할 수 있어요.');
+                    return;
+                }
+                if (!window.isSecureContext) {
+                    setSensorStatus('needs-https', '기울기 조작은 HTTPS 게임 주소에서 열어 주세요. 지금은 방향 버튼·화살표 키로 조작할 수 있어요.');
+                    return;
+                }
+                const request = (type) => {
+                    if (typeof type === 'undefined') return Promise.resolve(false);
+                    if (typeof type.requestPermission !== 'function') return Promise.resolve(true);
+                    try { return Promise.resolve(type.requestPermission()).then(value => value === 'granted', () => false); }
+                    catch (_) { return Promise.resolve(false); }
+                };
+                const [orientationAllowed, motionAllowed] = await Promise.all([
+                    request(window.DeviceOrientationEvent), request(window.DeviceMotionEvent)
+                ]);
+                if (!orientationAllowed && !motionAllowed) {
+                    setSensorStatus('unavailable', '센서가 지원되지 않거나 접근이 허용되지 않았어요. 방향 버튼·화살표 키로 조작하세요.');
+                    return;
+                }
+                if (orientationAllowed) window.addEventListener('deviceorientation', handleOrientation, true);
+                if (motionAllowed) window.addEventListener('devicemotion', handleMotion, true);
+                setSensorStatus('waiting', '센서 확인 중… 태블릿을 편하게 잡고 잠시 기다리세요.');
+                sensorCheckTimeout = setTimeout(() => {
+                    if (sensorState === 'waiting') {
+                        setSensorStatus('unavailable', '센서 신호가 없어요. HTTPS 주소·브라우저의 동작 센서 허용을 확인하거나 방향 버튼으로 조작하세요.');
+                    }
+                }, 3000);
+            } catch (_) {
+                setSensorStatus('unavailable', '센서에 연결하지 못했어요. 방향 버튼·화살표 키로 조작하세요.');
+            } finally {
+                sensorRequestBusy = false;
+                calibrateBtn.disabled = sensorState === 'needs-https';
+            }
+        }
+
+        function screenAngle() {
+            const angle = screen.orientation?.angle ?? window.orientation ?? 0;
+            return Number.isFinite(angle) ? angle * Math.PI / 180 : 0;
+        }
+
+        // 센서의 기본 좌표계를 현재 화면 좌우로 변환. 양수는 화면 오른쪽을 낮춘 자세.
+        function lateralAngle(x, y, z) {
+            const rotation = screenAngle();
+            const lateral = -x * Math.cos(rotation) + y * Math.sin(rotation);
+            const vertical = x * Math.sin(rotation) + y * Math.cos(rotation);
+            return Math.atan2(lateral, Math.hypot(vertical, z)) * 180 / Math.PI;
+        }
+
+        // 방향 센서가 정상 수신 중일 때는 가속도 값이 조작 값을 덮어쓰지 않는다.
+        function handleMotion(event) {
+            const acc = event.accelerationIncludingGravity;
+            if (!acc || ![acc.x, acc.y, acc.z].every(Number.isFinite)) return;
+            if (performance.now() - lastOrientationAt < ORIENTATION_PRIORITY_MS) return;
+            // 이동 가속도가 큰 순간과 자유 낙하는 기울기 표본에서 제외한다.
+            const magnitude = Math.hypot(acc.x, acc.y, acc.z);
+            if (magnitude < 6 || magnitude > 14) return;
+            acceptSensorAngle(lateralAngle(acc.x, acc.y, acc.z), 'motion');
+        }
+
+        // 브라우저가 융합한 방향 값을 우선 사용한다. 자력계/방위각은 필요하지 않다.
+        function handleOrientation(event) {
+            if (![event.beta, event.gamma].every(Number.isFinite)) return;
+            lastOrientationAt = performance.now();
+            const beta = event.beta * Math.PI / 180;
+            const gamma = event.gamma * Math.PI / 180;
+            acceptSensorAngle(lateralAngle(
+                -Math.cos(beta) * Math.sin(gamma), Math.sin(beta),
+                Math.cos(beta) * Math.cos(gamma)
+            ), 'orientation');
+        }
+
+        function acceptSensorAngle(angle, source) {
+            if (!Number.isFinite(angle) || document.hidden) return;
+            const now = performance.now();
+            const elapsed = now - lastSampleAt;
+            if (source !== sensorSource || elapsed > SENSOR_STALE_MS ||
+                !['calibrating', 'ready'].includes(sensorState)) {
+                sensorSource = source;
+                filteredAngle = angle;
+                beginCalibration();
+            }
+            lastSampleAt = now;
+            if (calibration) {
+                const average = calibration.count ? calibration.sum / calibration.count : angle;
+                if (Math.abs(angle - average) > 4) {
+                    calibration = { startedAt: null, sum: 0, count: 0 };
+                }
+                if (calibration.startedAt === null) calibration.startedAt = now;
+                calibration.sum += angle;
+                calibration.count++;
+                if (now - calibration.startedAt >= 450 && calibration.count >= 5) {
+                    neutralAngle = calibration.sum / calibration.count;
+                    filteredAngle = angle;
+                    calibration = null;
+                    setSensorStatus('ready', '기울기 연결됨 · 0° 기준에서 좌우로 약 9° 기울여 이동하세요.');
+                }
+                updateTiltIndicator(0);
+                return;
+            }
+            const weight = 1 - Math.exp(-Math.max(0, elapsed) / 90);
+            filteredAngle += (angle - filteredAngle) * weight;
+            updateTiltIndicator(filteredAngle - neutralAngle);
+        }
+
+        function refreshSensorState(now) {
+            if (['calibrating', 'ready'].includes(sensorState) && now - lastSampleAt > SENSOR_STALE_MS) {
+                calibration = null;
+                updateTiltIndicator(0);
+                setSensorStatus('lost', '센서 신호가 멈췄어요. 다시 수신하면 기준 자세를 맞춥니다. 방향 버튼도 사용할 수 있어요.');
+            }
+        }
+
+        // 화면을 돌린 뒤에는 새 화면 좌표계에서 다시 0°를 잡는다.
+        function resetForScreenChange() {
+            if (['calibrating', 'ready'].includes(sensorState)) beginCalibration();
+            updateTiltIndicator(0);
+        }
+        if (screen.orientation?.addEventListener) {
+            screen.orientation.addEventListener('change', resetForScreenChange);
+        } else {
+            window.addEventListener('orientationchange', resetForScreenChange);
+        }
+        document.addEventListener('visibilitychange', () => {
+            updateTiltIndicator(0);
+            if (!document.hidden) {
+                lastTime = performance.now();
+                if (['calibrating', 'ready'].includes(sensorState)) beginCalibration();
+            }
+        });
+
+        function updateTiltIndicator(angle) {
+            currentTiltAngle = Math.max(-40, Math.min(40, angle));
+            tiltValue.textContent = `${currentTiltAngle > 0.5 ? '+' : ''}${Math.round(currentTiltAngle) || 0}°`;
+            const percent = ((currentTiltAngle + 40) / 80) * 100;
+            tiltDot.style.left = `calc(${Math.max(5, Math.min(95, percent))}% - 6px)`;
+        }
+
+        // 한 칸 계단 오르기 실행 (dir: -1 왼쪽 위, +1 오른쪽 위)
+        function attemptClimb(dir) {
+            if (!isPlaying || isFalling) return;
+
+            player.facing = dir;
+            player.jumpAnim = 1.0;
+
+            // 첨부 이미지처럼 캐릭터 뒤에 파란 잔상 이펙트 남기기
+            player.afterimages.push({
+                x: player.x,
+                y: player.y,
+                facing: player.facing,
+                alpha: 0.85
+            });
+            if (player.afterimages.length > 5) {
+                player.afterimages.shift();
+            }
+
+            const nextStair = stairs[currentStepIndex + 1];
+            const targetX = player.x + dir * STEP_W;
+            const targetY = player.y - STEP_H;
+
+            // 다음 계단이 이동한 방향에 정확히 있는지 판정!
+            if (nextStair && Math.abs(nextStair.x - targetX) < 5) {
+                // 성공! 계단 올라가기
+                currentStepIndex++;
+                player.x = nextStair.x;
+                player.y = nextStair.y;
+
+                // 코인 획득 체크
+                if (nextStair.hasCoin) {
+                    nextStair.hasCoin = false;
+                    coinCount++;
+                    coinCountEl.textContent = coinCount;
+                    stamina = Math.min(MAX_STAMINA, stamina + 12);
+                    playSfx('coin');
+                } else {
+                    playSfx('step');
+                }
+
+                // 오를 때마다 상단 게이지 회복
+                stamina = Math.min(MAX_STAMINA, stamina + 7.5);
+                stepCountEl.textContent = currentStepIndex;
+                ensureMoreStairs();
+            } else {
+                // 실패! 계단이 없는 허공으로 발을 헛디딤
+                player.x = targetX;
+                player.y = targetY;
+                triggerFall('발을 헛디뎠어요!');
+            }
+        }
+
+        // 추락 및 게임 오버 진입
+        function triggerFall(reasonText) {
+            if (isFalling) return;
+            isFalling = true;
+            player.vy = -4;
+            playSfx('fall');
+
+            setTimeout(() => {
+                endGame(reasonText);
+            }, 650);
+        }
+
+        // 게임 시작 초기화
+        function startGame() {
+            initStairs();
+            currentStepIndex = 0;
+            coinCount = 0;
+            stamina = MAX_STAMINA;
+            isPlaying = true;
+            isFalling = false;
+            stepCooldown = 0.35;
+            neutralReturned = true;
+            updateTiltIndicator(0);
+            if (['calibrating', 'ready'].includes(sensorState)) beginCalibration();
+
+            player.x = 0;
+            player.y = 0;
+            player.vy = 0;
+            player.facing = stairs[1] ? stairs[1].dir : 1;
+            player.jumpAnim = 0;
+            player.afterimages = [];
+
+            camera.x = 0;
+            camera.y = 0;
+
+            stepCountEl.textContent = '0';
+            coinCountEl.textContent = '0';
+            staminaBar.style.width = '100%';
+
+            startOverlay.classList.add('hidden');
+            gameoverOverlay.classList.add('hidden');
+            hud.classList.remove('hidden');
+            touchFallback.classList.remove('hidden');
+            sensorPanel.classList.remove('hidden');
+        }
+
+        // 게임 종료 결과 표시
+        function endGame(reason) {
+            isPlaying = false;
+            hud.classList.add('hidden');
+            touchFallback.classList.add('hidden');
+            sensorPanel.classList.add('hidden');
+
+            if (currentStepIndex > bestSteps) {
+                bestSteps = currentStepIndex;
+                try { localStorage.setItem('infinite_stairs_best', bestSteps.toString()); }
+                catch (_) { /* 기록 저장이 제한되어도 결과를 표시 */ }
+            }
+
+            document.getElementById('gameover-reason').textContent = reason;
+            document.getElementById('final-steps').textContent = currentStepIndex;
+            document.getElementById('best-steps').textContent = bestSteps;
+            document.getElementById('final-coins').textContent = coinCount;
+
+            gameoverOverlay.classList.remove('hidden');
+        }
+
+        // 첨부 이미지 스타일의 도트 감성 배경 & 계단 & 캐릭터 렌더링
+        function render() {
+            const w = canvas.width;
+            const h = canvas.height;
+
+            // 1. 고도에 따라 변하는 하늘 배경 그라데이션 (낮 하늘 -> 노을 -> 우주)
+            const altitudeProgress = Math.min(1, currentStepIndex / 120);
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, h);
+            if (altitudeProgress < 0.5) {
+                skyGrad.addColorStop(0, '#60a5fa');
+                skyGrad.addColorStop(1, '#bae6fd');
+            } else if (altitudeProgress < 0.85) {
+                skyGrad.addColorStop(0, '#4f46e5');
+                skyGrad.addColorStop(1, '#fb923c');
+            } else {
+                skyGrad.addColorStop(0, '#090d16');
+                skyGrad.addColorStop(1, '#312e81');
+            }
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 2. 배경 구름 & 도시 빌딩 실루엣 (패럴랙스 스크롤)
+            drawBackgroundScenery(w, h);
+
+            // 3. 카메라 변환 적용 (캐릭터가 화면 중앙 약간 아래에 위치하도록)
+            ctx.save();
+            const screenCenterX = w / 2 - camera.x;
+            const screenCenterY = h * 0.62 - camera.y;
+            ctx.translate(screenCenterX, screenCenterY);
+
+            // 4. 계단 블록 및 황금 코인 그리기
+            const startIdx = Math.max(0, currentStepIndex - 12);
+            const endIdx = Math.min(stairs.length - 1, currentStepIndex + 22);
+
+            for (let i = startIdx; i <= endIdx; i++) {
+                const st = stairs[i];
+                drawPixelStair(st.x, st.y, i === 0);
+                if (st.hasCoin) {
+                    drawPixelCoin(st.x, st.y - 26);
+                }
+            }
+
+            // 5. 파란색 잔상 이펙트 (첨부 이미지의 푸른 오라 효과)
+            player.afterimages.forEach(img => {
+                drawCharacter(img.x, img.y, img.facing, 0, img.alpha, true);
+            });
+
+            // 6. 주인공 캐릭터 그리기 (붉은 후드티 점프 캐릭터)
+            const jumpOffset = Math.sin(player.jumpAnim * Math.PI) * 18;
+            drawCharacter(player.x, player.y - jumpOffset, player.facing, player.jumpAnim, 1.0, false);
+
+            ctx.restore();
+        }
+
+        // 구름 및 고층 빌딩 스카이라인 배경
+        function drawBackgroundScenery(w, h) {
+            // 흰 구름
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            const cloudOffsetY = (-camera.y * 0.15) % 300;
+            for (let i = -1; i < 4; i++) {
+                const cy = i * 260 + cloudOffsetY;
+                ctx.beginPath();
+                ctx.arc(w * 0.22, cy, 34, 0, Math.PI * 2);
+                ctx.arc(w * 0.30, cy - 8, 42, 0, Math.PI * 2);
+                ctx.arc(w * 0.39, cy, 30, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(w * 0.72, cy + 120, 28, 0, Math.PI * 2);
+                ctx.arc(w * 0.80, cy + 114, 36, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 하단 도시 스카이라인 (높이 올라갈수록 아래로 멀어짐)
+            const cityBaseY = h + Math.min(400, -camera.y * 0.35);
+            if (cityBaseY < h + 380) {
+                ctx.fillStyle = 'rgba(148, 163, 184, 0.45)';
+                ctx.fillRect(w * 0.08, cityBaseY - 260, 75, 260);
+                ctx.fillRect(w * 0.32, cityBaseY - 190, 90, 190);
+                ctx.fillRect(w * 0.68, cityBaseY - 240, 85, 240);
+
+                // 빌딩 창문 격자
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+                for (let wy = cityBaseY - 240; wy < cityBaseY - 20; wy += 24) {
+                    ctx.fillRect(w * 0.08 + 14, wy, 12, 12);
+                    ctx.fillRect(w * 0.08 + 44, wy, 12, 12);
+                    ctx.fillRect(w * 0.68 + 16, wy + 20, 12, 12);
+                    ctx.fillRect(w * 0.68 + 50, wy + 20, 12, 12);
+                }
+            }
+        }
+
+        // 첨부 이미지 스타일의 도트 벽돌 계단 블록
+        function drawPixelStair(cx, topY, isBase) {
+            const left = cx - STEP_W / 2;
+            const width = isBase ? STEP_W * 2.2 : STEP_W;
+            const drawLeft = isBase ? cx - width / 2 : left;
+
+            // 외곽 검은 테두리
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(drawLeft - 3, topY - 3, width + 6, STEP_H + 6);
+
+            // 돌계단 몸체 (밝은 회색 + 하단 그림자)
+            ctx.fillStyle = '#cbd5e1';
+            ctx.fillRect(drawLeft, topY, width, STEP_H);
+
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillRect(drawLeft, topY + STEP_H - 9, width, 9);
+
+            // 상단 밝은 하이라이트
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(drawLeft + 3, topY + 2, width - 6, 5);
+
+            // 도트 질감 점박이 디테일
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(drawLeft + 10, topY + 12, 6, 5);
+            ctx.fillRect(drawLeft + width - 18, topY + 14, 7, 5);
+            ctx.fillRect(drawLeft + width / 2 - 4, topY + 10, 5, 5);
+        }
+
+        // 회전하는 도트 황금 코인
+        function drawPixelCoin(cx, cy) {
+            const pulse = Math.abs(Math.sin(performance.now() * 0.005));
+            const coinW = 10 + pulse * 12;
+
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, coinW / 2 + 2.5, 16.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#facc15';
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, coinW / 2, 14, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#fef08a';
+            ctx.fillRect(cx - 1.5, cy - 7, 3, 14);
+        }
+
+        // 첨부 이미지 속 붉은 후드티 캐릭터 & 파란 잔상 렌더링
+        function drawCharacter(cx, footY, facing, jumpAnim, alpha, isGhost) {
+            ctx.save();
+            ctx.translate(cx, footY);
+            ctx.scale(facing, 1);
+            ctx.globalAlpha = alpha;
+
+            if (isGhost) {
+                // 파란 잔상 이펙트
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(-18, -54, 36, 46);
+                ctx.fillStyle = '#bae6fd';
+                ctx.fillRect(-12, -48, 24, 34);
+                ctx.restore();
+                return;
+            }
+
+            // 파란 운동화 발 (점프 시 역동적으로 벌림)
+            const stride = jumpAnim > 0.1 ? 8 : 0;
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16 - stride, -10, 14, 10);
+            ctx.fillRect(4 + stride, -12, 14, 10);
+
+            ctx.fillStyle = '#2563eb';
+            ctx.fillRect(-14 - stride, -8, 10, 6);
+            ctx.fillRect(6 + stride, -10, 10, 6);
+
+            // 빨간 추리닝 바지 & 후드 몸통
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-16, -36, 32, 27);
+            ctx.fillStyle = '#dc2626';
+            ctx.fillRect(-13, -33, 26, 22);
+
+            // 흰색 허리 줄무늬
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(-13, -21, 26, 4);
+
+            // 빨간 후드 머리
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(-18, -64, 36, 30);
+            ctx.fillStyle = '#ef4444';
+            ctx.fillRect(-15, -61, 30, 24);
+
+            // 얼굴 피부 & 열정적인 표정
+            ctx.fillStyle = '#fde68a';
+            ctx.fillRect(-4, -55, 17, 16);
+
+            // 눈 & 벌린 입
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(5, -52, 4, 4);
+            ctx.fillStyle = '#991b1b';
+            ctx.fillRect(3, -45, 8, 5);
+
+            // 앞으로 뻗은 팔
+            ctx.fillStyle = '#dc2626';
+            ctx.fillRect(8, -32, 14, 8);
+            ctx.fillStyle = '#fde68a';
+            ctx.fillRect(19, -32, 6, 8);
+
+            ctx.restore();
+        }
+
+        // 메인 게임 루프
+        let lastTime = performance.now();
+        function gameLoop(now) {
+            requestAnimationFrame(gameLoop);
+            const dt = Math.min((now - lastTime) / 1000, 0.05);
+            lastTime = now;
+            if (document.hidden) return;
+            refreshSensorState(now);
+
+            if (isPlaying) {
+                if (!isFalling) {
+                    // 1. 스태미나(시간 게이지) 감소 (높이 올라갈수록 조금씩 빨라짐)
+                    const drainRate = 13 + Math.min(18, currentStepIndex * 0.16);
+                    const sensorPaused = sensorState === 'waiting' || sensorState === 'calibrating';
+                    if (!sensorPaused) stamina -= drainRate * dt;
+                    staminaBar.style.width = `${Math.max(0, stamina)}%`;
+
+                    if (stamina <= 0) {
+                        triggerFall('시간 게이지가 다 닳았어요!');
+                    }
+
+                    // 2. 기울기 센서 입력 처리
+                    if (stepCooldown > 0) {
+                        stepCooldown -= dt;
+                    }
+
+                    const TILT_THRESHOLD = 9;  // 9도 이상 기울이면 민감하게 반응!
+                    const NEUTRAL_ZONE = 5;    // 5도 이내로 돌아오면 중립 판정
+
+                    if (Math.abs(currentTiltAngle) < NEUTRAL_ZONE) {
+                        neutralReturned = true;
+                    }
+
+                    if (sensorState === 'ready' && stepCooldown <= 0) {
+                        if (currentTiltAngle <= -TILT_THRESHOLD) {
+                            attemptClimb(-1);
+                            // 중립에서 기울였으면 0.16초, 계속 기울이고 있으면 0.25초 간격으로 연속 오르기
+                            stepCooldown = neutralReturned ? 0.16 : 0.25;
+                            neutralReturned = false;
+                        } else if (currentTiltAngle >= TILT_THRESHOLD) {
+                            attemptClimb(1);
+                            stepCooldown = neutralReturned ? 0.16 : 0.25;
+                            neutralReturned = false;
+                        }
+                    }
+
+                    // 3. 카메라 부드럽게 캐릭터 추적
+                    camera.x += (player.x - camera.x) * 12 * dt;
+                    camera.y += (player.y - camera.y) * 12 * dt;
+                } else {
+                    // 발을 헛디뎠을 때 아래로 추락 물리
+                    player.vy += 38 * dt;
+                    player.y += player.vy;
+                }
+
+                // 점프 모션 및 잔상 페이드아웃
+                if (player.jumpAnim > 0) {
+                    player.jumpAnim = Math.max(0, player.jumpAnim - dt * 5.5);
+                }
+                for (let i = player.afterimages.length - 1; i >= 0; i--) {
+                    player.afterimages[i].alpha -= dt * 3.2;
+                    if (player.afterimages[i].alpha <= 0) {
+                        player.afterimages.splice(i, 1);
+                    }
+                }
+            }
+
+            render();
+        }
+
+        // 버튼 & 보조 터치 & 키보드(테스트용) 이벤트
+        document.getElementById('start-btn').addEventListener('click', async (event) => {
+            if (event.currentTarget.disabled) return;
+            unlockAudio();
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+                await enableTiltSensor();
+                startGame();
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', () => {
+            startGame();
+        });
+
+        calibrateBtn.addEventListener('click', () => {
+            if (['calibrating', 'ready'].includes(sensorState)) beginCalibration();
+            else enableTiltSensor();
+        });
+
+        // click 하나로 터치·마우스·키보드 활성화를 함께 처리해 중복 이동을 방지한다.
+        document.getElementById('btn-left-step').addEventListener('click', () => attemptClimb(-1));
+        document.getElementById('btn-right-step').addEventListener('click', () => attemptClimb(1));
+
+        window.addEventListener('keydown', (event) => {
+            unlockAudio();
+            if (event.repeat || event.ctrlKey || event.metaKey || event.altKey ||
+                /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                event.preventDefault();
+                attemptClimb(event.key === 'ArrowLeft' ? -1 : 1);
+            }
+        });
+
+        // 캔버스 좌·우 터치 및 드래그(스와이프) 보조 조작 (센서 미지원 환경 완벽 대비)
+        let pointerStartX = null;
+        let pointerId = null;
+        let pointerDragged = false;
+        canvas.addEventListener('pointerdown', (e) => {
+            if (!isPlaying || isFalling || pointerId !== null) return;
+            pointerStartX = e.clientX;
+            pointerId = e.pointerId;
+            pointerDragged = false;
+            canvas.setPointerCapture(e.pointerId);
+        });
+        canvas.addEventListener('pointermove', (e) => {
+            if (pointerStartX === null || e.pointerId !== pointerId || !isPlaying || isFalling) return;
+            const dx = e.clientX - pointerStartX;
+            if (Math.abs(dx) > 18) {
+                attemptClimb(dx < 0 ? -1 : 1);
+                pointerStartX = e.clientX;
+                pointerDragged = true;
+            }
+        });
+        canvas.addEventListener('pointerup', (e) => {
+            if (e.pointerId !== pointerId) return;
+            if (!pointerDragged && pointerStartX !== null && isPlaying && !isFalling) {
+                const dx = e.clientX - pointerStartX;
+                if (Math.abs(dx) <= 18) {
+                    // 짧게 탭한 경우 화면 왼쪽 절반이면 왼쪽, 오른쪽 절반이면 오른쪽으로 이동
+                    const rect = canvas.getBoundingClientRect();
+                    attemptClimb(e.clientX - rect.left < rect.width / 2 ? -1 : 1);
+                }
+            }
+            pointerStartX = null;
+            pointerId = null;
+        });
+        function clearPointer() { pointerStartX = null; pointerId = null; pointerDragged = false; }
+        canvas.addEventListener('pointercancel', clearPointer);
+        canvas.addEventListener('lostpointercapture', clearPointer);
+
+        // 초기 실행
+        window.onload = function () {
+            resizeCanvas();
+            initStairs();
+            requestAnimationFrame(gameLoop);
+        };
+    </script>
+</body>
+</html>
