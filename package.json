@@ -1,0 +1,11 @@
+{
+  "name": "261123-infinite-stairs-tilt",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test qa/leaderboard-tests.mjs && node qa/sensor-tests.cjs"
+  },
+  "dependencies": { "@vercel/blob": "2.9.0" },
+  "overrides": { "zod": "4.6.7" }
+}

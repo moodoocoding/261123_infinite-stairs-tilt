@@ -1,8 +1,8 @@
 {
-  "type": "synthetic sensor/game integration tests",
+  "type": "synthetic sensor/game and shared-board UI integration tests",
   "physicalDeviceTested": false,
-  "passed": 19,
-  "total": 19,
+  "passed": 24,
+  "total": 24,
   "results": [
     {
       "name": "Concurrent motion events cannot overwrite fresh orientation readings",
@@ -78,6 +78,26 @@
     },
     {
       "name": "Blocked local storage does not break start or game over",
+      "passed": true
+    },
+    {
+      "name": "Shared board renders server rows and explicitly shows real empty state",
+      "passed": true
+    },
+    {
+      "name": "Shared board network failures have a retry state, never fake sample rows",
+      "passed": true
+    },
+    {
+      "name": "Public scores are submitted only after explicit form action, using this finished run",
+      "passed": true
+    },
+    {
+      "name": "Failed public registration keeps the original score available to retry",
+      "passed": true
+    },
+    {
+      "name": "Local files explain that shared scores require the online game",
       "passed": true
     }
   ]

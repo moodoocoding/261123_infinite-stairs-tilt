@@ -16,8 +16,12 @@ function game(options = {}) {
   function element() {
     const classes = new Set();
     return {
-      style: {}, textContent: '', disabled: false, tagName: 'DIV', events: {},
-      classList: { add: c => classes.add(c), remove: c => classes.delete(c), contains: c => classes.has(c) },
+      style: {}, textContent: '', value: '', disabled: false, tagName: 'DIV', events: {}, children: [],
+      classList: { add: c => classes.add(c), remove: c => classes.delete(c), contains: c => classes.has(c),
+        toggle(c, force) { if (force === true || (force === undefined && !classes.has(c))) classes.add(c); else classes.delete(c); } },
+      appendChild(child) { this.children.push(child); return child; },
+      replaceChildren(...children) { this.children = children; },
+      focus() { sandbox.document.activeElement = this; },
       addEventListener(type, fn) { this.events[type] = fn; },
       getBoundingClientRect: () => ({ width: 420, height: 840, left: 0 }),
       setPointerCapture() {},
@@ -42,7 +46,7 @@ function game(options = {}) {
   }
   const sandbox = {
     window,
-    document: { hidden: false, getElementById: id => elements[id],
+    document: { hidden: false, activeElement: null, createElement: element, getElementById: id => elements[id],
       addEventListener(type, fn) { documentListeners[type] = fn; } },
     screen: { orientation: { angle: 0, addEventListener(type, fn) { documentListeners.screenchange = fn; } } },
     performance: { now: () => now },
@@ -50,7 +54,7 @@ function game(options = {}) {
       setItem() { if (options.storageBlocked) throw Error('blocked'); } },
     requestAnimationFrame() {},
     setTimeout(fn, ms) { const id = nextTimer++; timers.set(id, { fn, at: now + ms }); return id; },
-    clearTimeout: id => timers.delete(id), console
+    clearTimeout: id => timers.delete(id), console, fetch: options.fetch, AbortController
   };
   const context = vm.createContext(sandbox);
   vm.runInContext(source, context, { filename: htmlPath });
@@ -205,7 +209,55 @@ async function test(name, fn) {
     g.run('startGame(); currentStepIndex = 5; endGame("test")');
     assert.equal(g.elements['final-steps'].textContent, 5);
   });
-  const report = { type: 'synthetic sensor/game integration tests', physicalDeviceTested: false,
+  await test('Shared board renders server rows and explicitly shows real empty state', async () => {
+    let data = { entries: [{ rank: 1, nickname: '서버의별명', steps: 32 }], total: 1 };
+    const g = game({ fetch: async () => ({ ok: true, json: async () => data }) });
+    await g.run('loadSharedBoard()');
+    assert.equal(g.elements['leaderboard-rows'].children[0].children[1].textContent, '서버의별명');
+    data = { entries: [], total: 0 }; await g.run('loadSharedBoard()');
+    assert.equal(g.elements['leaderboard-rows'].children.length, 0);
+    assert.match(g.elements['leaderboard-status'].textContent, /아직 등록된 기록/);
+  });
+  await test('Shared board network failures have a retry state, never fake sample rows', async () => {
+    const g = game({ fetch: async () => { throw new TypeError('offline'); } });
+    await g.run('loadSharedBoard()');
+    assert.match(g.elements['leaderboard-status'].textContent, /서버 연결/);
+    assert.equal(g.elements['leaderboard-refresh'].disabled, false);
+    assert.equal(g.elements['leaderboard-rows'].children.length, 0);
+  });
+  await test('Public scores are submitted only after explicit form action, using this finished run', async () => {
+    const calls = [];
+    const g = game({ fetch: async (_, options) => {
+      const body = JSON.parse(options.body); calls.push(body);
+      return { ok: true, json: async () => body.action === 'start' ? { runToken: 'test-round' }
+        : { saved: true, improved: true, bestSteps: 5, rank: 1 } };
+    } });
+    g.run('startGame()'); await g.run('activeSharedRound.ready');
+    g.run('currentStepIndex = 5; coinCount = 1; endGame("test")');
+    assert.deepEqual(calls.map(c => c.action), ['start']);
+    g.run('currentStepIndex = 99'); // Later game state must not replace the finished score snapshot.
+    g.elements['score-nickname'].value = '도전자';
+    await g.elements['score-form'].events.submit({ preventDefault() {} });
+    assert.equal(calls[1].steps, 5); assert.equal(calls[1].coins, 1); assert.equal(calls[1].runToken, 'test-round');
+    assert.match(g.elements['score-status'].textContent, /저장 완료/);
+    assert.equal(g.elements['score-submit'].disabled, true);
+  });
+  await test('Failed public registration keeps the original score available to retry', async () => {
+    const g = game({ fetch: async (_, options) => ({ ok: JSON.parse(options.body).action === 'start',
+      json: async () => JSON.parse(options.body).action === 'start' ? { runToken: 'test-round' } : { error: '저장 실패' } }) });
+    g.run('startGame()'); await g.run('activeSharedRound.ready'); g.run('currentStepIndex = 3; endGame("test")');
+    g.elements['score-nickname'].value = '도전자';
+    await g.elements['score-form'].events.submit({ preventDefault() {} });
+    assert.equal(g.run('pendingSharedScore.steps'), 3);
+    assert.equal(g.elements['score-submit'].disabled, false);
+    assert.match(g.elements['score-status'].textContent, /저장 실패/);
+  });
+  await test('Local files explain that shared scores require the online game', async () => {
+    const g = game({ protocol: 'content:' }); await g.run('loadSharedBoard()');
+    assert.match(g.elements['leaderboard-status'].textContent, /HTTPS/);
+  });
+
+  const report = { type: 'synthetic sensor/game and shared-board UI integration tests', physicalDeviceTested: false,
     passed: results.filter(r => r.passed).length, total: results.length, results };
   fs.writeFileSync(path.join(__dirname, 'test-results.json'), JSON.stringify(report, null, 2));
   console.log(JSON.stringify(report, null, 2));

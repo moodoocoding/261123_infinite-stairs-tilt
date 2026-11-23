@@ -170,7 +170,7 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
             overflow: hidden;
             user-select: none;
             -webkit-user-select: none;
-            touch-action: none;
+            touch-action: manipulation;
             background-color: #1e293b;
         }
         .font-jua {
@@ -212,6 +212,34 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
         @media (max-height: 620px) {
             #start-overlay { justify-content: flex-start; }
         }
+        #stairs-canvas { touch-action: none; }
+        #start-overlay, #gameover-overlay { overflow-y: auto; overscroll-behavior: contain; }
+        #start-overlay > *, #gameover-overlay > * { flex-shrink: 0; }
+        #gameover-overlay { justify-content: flex-start; padding-top: 28px; padding-bottom: 28px; }
+        .board-link { color: #fde68a; border: 1px solid #fde68a88; border-radius: 12px; padding: 10px 16px; min-height: 44px; margin-top: 14px; font-weight: 800; cursor: pointer; }
+        #score-form { width: 100%; max-width: 320px; padding: 16px; border-radius: 16px; background: #1e293b; color: #fff; margin: 0 0 18px; text-align: left; }
+        #score-form label { display: block; font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+        #score-nickname { width: 100%; padding: 12px; border: 2px solid #64748b; border-radius: 10px; background: #fff; color: #0f172a; font: inherit; font-size: 16px; }
+        #score-form .score-note { font-size: 12px; line-height: 1.6; margin: 8px 0; color: #cbd5e1; }
+        #score-submit { width: 100%; padding: 12px; border-radius: 10px; background: #fbbf24; color: #451a03; font-size: 15px; font-weight: 900; cursor: pointer; }
+        #score-submit:disabled { opacity: .55; cursor: default; }
+        #score-status { margin-top: 8px; font-size: 13px; line-height: 1.5; color: #e2e8f0; }
+        #leaderboard-overlay { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; padding: 22px 18px; background: #0f172a; color: #f8fafc; }
+        .board-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .board-header h2 { font-size: 23px; }
+        #leaderboard-close { min-width: 44px; min-height: 44px; border-radius: 10px; background: #334155; font-size: 25px; cursor: pointer; }
+        .board-intro { font-size: 13px; color: #cbd5e1; margin: 12px 0 16px; line-height: 1.7; }
+        .board-tools { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        #leaderboard-status { flex: 1; color: #cbd5e1; font-size: 13px; line-height: 1.6; }
+        #leaderboard-refresh { flex-shrink: 0; padding: 9px 12px; border: 1px solid #64748b; border-radius: 8px; color: #fff; min-height: 40px; cursor: pointer; }
+        #leaderboard-scroll { overflow-y: auto; min-height: 0; flex: 1; border: 1px solid #334155; border-radius: 12px; overscroll-behavior: contain; }
+        #leaderboard-table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+        #leaderboard-table th { position: sticky; top: 0; background: #1e293b; color: #94a3b8; font-size: 12px; padding: 12px 10px; }
+        #leaderboard-table td { padding: 14px 10px; border-top: 1px solid #334155; overflow-wrap: anywhere; }
+        #leaderboard-table td:first-child { color: #fde68a; width: 60px; font-weight: 800; }
+        #leaderboard-table td:last-child { text-align: right; font-weight: 900; white-space: nowrap; color: #7dd3fc; }
+        #leaderboard-table th:last-child { text-align: right; }
+        @media (max-height: 720px) { #start-overlay { justify-content: flex-start; } }
     </style>
 </head>
 <body class="w-screen h-screen flex items-center justify-center bg-slate-900">
@@ -311,6 +339,7 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
             <p id="sensor-status" class="text-slate-400 text-xs mt-3">
                 시작하면 센서를 확인합니다. 센서가 없으면 방향 버튼·화살표 키로 조작하세요.
             </p>
+            <button id="leaderboard-start" class="board-link" type="button">🏆 세계 공용 순위표</button>
         </div>
 
         <!-- 2. 게임 오버 오버레이 -->
@@ -330,7 +359,7 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
                 </div>
                 <div class="flex justify-around">
                     <div>
-                        <div class="text-xs text-slate-400 font-bold">최고 기록</div>
+                        <div class="text-xs text-slate-400 font-bold">이 기기 최고 기록</div>
                         <div class="font-jua text-2xl text-amber-400 mt-0.5"><span id="best-steps">0</span>층</div>
                     </div>
                     <div class="h-10 w-px bg-slate-700"></div>
@@ -341,10 +370,37 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
                 </div>
             </div>
 
+            <form id="score-form">
+                <label for="score-nickname">공개 닉네임 · 2~12자</label>
+                <input id="score-nickname" name="nickname" type="text" minlength="2" maxlength="12" required autocomplete="off" placeholder="예: 계단왕" aria-describedby="score-disclosure score-status">
+                <p id="score-disclosure" class="score-note">실명 대신 별명을 써 주세요. 등록한 닉네임과 최고 점수는 전 세계 순위표에 공개돼요.</p>
+                <button id="score-submit" type="submit">이번 점수 등록</button>
+                <p id="score-status" role="status" aria-live="polite"></p>
+            </form>
+
             <button id="restart-btn" class="btn-retro font-jua text-2xl bg-sky-500 hover:bg-sky-400 text-white px-9 py-4 rounded-2xl border-4 border-sky-200 shadow-[0_6px_0_#0369a1] cursor-pointer">
                 다시 도전하기 🔄
             </button>
+            <button id="leaderboard-end" class="board-link" type="button">🏆 세계 공용 순위표</button>
         </div>
+
+        <section id="leaderboard-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="leaderboard-title">
+            <div class="board-header">
+                <h2 id="leaderboard-title">🏆 세계 공용 순위표</h2>
+                <button id="leaderboard-close" type="button" aria-label="순위표 닫기">×</button>
+            </div>
+            <p class="board-intro">기기가 달라도 누구나 같은 순위를 봐요.<br>최고 기록 상위 50명 · 같은 점수는 공동 순위</p>
+            <div class="board-tools">
+                <p id="leaderboard-status" role="status" aria-live="polite">공용 순위를 불러오는 중이에요.</p>
+                <button id="leaderboard-refresh" type="button">새로고침</button>
+            </div>
+            <div id="leaderboard-scroll" tabindex="0" aria-label="공용 순위 목록">
+                <table id="leaderboard-table" class="hidden">
+                    <thead><tr><th scope="col">순위</th><th scope="col">닉네임</th><th scope="col">계단</th></tr></thead>
+                    <tbody id="leaderboard-rows"></tbody>
+                </table>
+            </div>
+        </section>
 
     </div>
 
@@ -374,6 +430,139 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
         const sensorPanel = document.getElementById('sensor-panel');
         const tiltValue = document.getElementById('tilt-value');
         const calibrateBtn = document.getElementById('calibrate-btn');
+
+        // 공용 기록은 같은 출처의 서버에 저장한다. localStorage는 닉네임 입력 편의용이다.
+        const boardOverlay = document.getElementById('leaderboard-overlay');
+        const boardStatus = document.getElementById('leaderboard-status');
+        const boardTable = document.getElementById('leaderboard-table');
+        const boardRows = document.getElementById('leaderboard-rows');
+        const boardRefresh = document.getElementById('leaderboard-refresh');
+        const scoreNickname = document.getElementById('score-nickname');
+        const scoreButton = document.getElementById('score-submit');
+        const scoreStatus = document.getElementById('score-status');
+        let activeSharedRound = null;
+        let pendingSharedScore = null;
+        let sharedRoundQueue = Promise.resolve();
+        let boardRequestId = 0;
+        let returnBoardFocus = null;
+        try { scoreNickname.value = localStorage.getItem('stairs_public_nickname') || ''; } catch (_) {}
+
+        async function leaderboardRequest(body) {
+            if (typeof fetch !== 'function' || !/^https?:$/.test(window.location?.protocol || '')) {
+                throw new Error('공용 순위는 HTTPS 게임 주소에서 이용할 수 있어요.');
+            }
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 12000);
+            try {
+                const response = await fetch('/api/leaderboard', {
+                    method: body ? 'POST' : 'GET', credentials: 'same-origin', cache: 'no-store',
+                    ...(body ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}),
+                    signal: controller.signal
+                });
+                let data;
+                try { data = await response.json(); } catch (_) { throw new Error('공용 순위 서버가 응답하지 않아요. 잠시 후 다시 시도해 주세요.'); }
+                if (!response.ok) throw new Error(data.error || '점수를 저장하지 못했어요. 다시 시도해 주세요.');
+                return data;
+            } catch (error) {
+                if (error.name === 'AbortError' || error.name === 'TypeError') throw new Error('서버 연결이 지연되고 있어요. 인터넷 연결을 확인하고 다시 시도해 주세요.');
+                throw error;
+            } finally { clearTimeout(timer); }
+        }
+
+        function prepareSharedRound() {
+            const round = { token: null, error: null };
+            activeSharedRound = round;
+            // 첫 요청의 참가자 쿠키가 도착하기 전에 재시작해도 요청 순서를 지킨다.
+            sharedRoundQueue = sharedRoundQueue.catch(() => {}).then(async () => {
+                try { round.token = (await leaderboardRequest({ action: 'start' })).runToken; }
+                catch (error) { round.error = error.message; }
+            });
+            round.ready = sharedRoundQueue;
+        }
+
+        function renderSharedBoard(data) {
+            if (!Array.isArray(data.entries)) throw new Error('순위 정보를 확인하지 못했어요. 다시 불러와 주세요.');
+            boardRows.replaceChildren();
+            for (const entry of data.entries) {
+                const row = document.createElement('tr');
+                for (const value of [`${entry.rank}위`, entry.nickname, `${entry.steps}층`]) {
+                    const cell = document.createElement('td');
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                }
+                boardRows.appendChild(row);
+            }
+            boardTable.classList.toggle('hidden', data.entries.length === 0);
+            boardStatus.textContent = data.entries.length
+                ? `서버에서 불러온 공용 기록 ${data.total}명 · 상위 ${data.entries.length}명`
+                : '아직 등록된 기록이 없어요. 첫 기록에 도전해 보세요!';
+        }
+
+        async function loadSharedBoard() {
+            const id = ++boardRequestId;
+            boardRefresh.disabled = true;
+            boardStatus.textContent = '전 세계 공용 순위를 불러오는 중이에요…';
+            try {
+                const data = await leaderboardRequest();
+                if (id === boardRequestId) renderSharedBoard(data);
+            } catch (error) {
+                if (id === boardRequestId) boardStatus.textContent = error.message;
+            } finally { if (id === boardRequestId) boardRefresh.disabled = false; }
+        }
+
+        function openSharedBoard() {
+            if (isPlaying) return;
+            returnBoardFocus = document.activeElement;
+            boardOverlay.classList.remove('hidden');
+            document.getElementById('leaderboard-close').focus();
+            loadSharedBoard();
+        }
+        function closeSharedBoard() {
+            boardOverlay.classList.add('hidden');
+            returnBoardFocus?.focus();
+        }
+        document.getElementById('leaderboard-start').addEventListener('click', openSharedBoard);
+        document.getElementById('leaderboard-end').addEventListener('click', openSharedBoard);
+        document.getElementById('leaderboard-close').addEventListener('click', closeSharedBoard);
+        boardRefresh.addEventListener('click', loadSharedBoard);
+        boardOverlay.addEventListener('keydown', event => {
+            if (event.key === 'Escape') { event.preventDefault(); closeSharedBoard(); }
+            if (event.key === 'Tab') {
+                const controls = [...boardOverlay.querySelectorAll('button:not(:disabled), [tabindex="0"]')];
+                const first = controls[0], last = controls[controls.length - 1];
+                if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+                else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+            }
+        });
+        document.getElementById('score-form').addEventListener('submit', async event => {
+            event.preventDefault();
+            const score = pendingSharedScore;
+            if (!score || scoreButton.disabled) return;
+            const nickname = scoreNickname.value.normalize('NFKC').trim().replace(/\s+/g, ' ');
+            if ([...nickname].length < 2 || [...nickname].length > 12 || !/^[\p{L}\p{N} _-]+$/u.test(nickname)) {
+                scoreStatus.textContent = '닉네임은 한글·영문·숫자·공백·밑줄·붙임표로 2~12자 입력해 주세요.';
+                scoreNickname.focus(); return;
+            }
+            scoreButton.disabled = true;
+            scoreStatus.textContent = '공용 순위에 저장하는 중이에요…';
+            try {
+                await score.round.ready;
+                if (!score.round.token) throw new Error(score.round.error || '게임을 서버에 연결하지 못했어요. 새 게임을 시작해 주세요.');
+                const data = await leaderboardRequest({ action: 'submit', nickname, steps: score.steps, coins: score.coins, runToken: score.round.token });
+                try { localStorage.setItem('stairs_public_nickname', nickname); } catch (_) {}
+                if (pendingSharedScore !== score) return;
+                scoreStatus.textContent = data.improved
+                    ? `공용 기록 저장 완료! 최고 ${data.bestSteps}층${data.rank ? ` · 세계 ${data.rank}위` : ''}`
+                    : `공용 최고 ${data.bestSteps}층 기록을 유지했어요.${data.rank ? ` 세계 ${data.rank}위예요.` : ''}`;
+                scoreButton.textContent = '공용 기록 등록 완료';
+                pendingSharedScore = null;
+            } catch (error) {
+                if (pendingSharedScore !== score) return;
+                scoreStatus.textContent = error.message;
+                scoreButton.disabled = false;
+                scoreButton.textContent = '이번 점수 다시 등록';
+            }
+        });
 
         // 계단 블록 규격
         const STEP_W = 68;
@@ -740,6 +929,8 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
 
         // 게임 시작 초기화
         function startGame() {
+            pendingSharedScore = null;
+            prepareSharedRound();
             initStairs();
             currentStepIndex = 0;
             coinCount = 0;
@@ -791,6 +982,12 @@ b{font-weight:900}canvas{display:block}button{touch-action:manipulation}
             document.getElementById('final-coins').textContent = coinCount;
 
             gameoverOverlay.classList.remove('hidden');
+            pendingSharedScore = currentStepIndex >= 1 ? { steps: currentStepIndex, coins: coinCount, round: activeSharedRound } : null;
+            scoreButton.disabled = !pendingSharedScore;
+            scoreButton.textContent = '이번 점수 등록';
+            scoreStatus.textContent = pendingSharedScore
+                ? '이번 기록을 공용 순위에 등록할 수 있어요. 같은 브라우저의 최고 점수만 남아요.'
+                : '한 계단 이상 오른 뒤 공용 순위에 등록해 보세요.';
         }
 
         // 첨부 이미지 스타일의 도트 감성 배경 & 계단 & 캐릭터 렌더링
