@@ -19,11 +19,17 @@
 
 ### 서버 저장 방식
 
-Vercel Functions의 `/api/leaderboard`와 전용 비공개 Vercel Blob 저장소를 사용합니다. SQL DB가 아닌 JSON 문서 저장 방식입니다. 브라우저가 직접 저장소에 접근하지 않으며 서버가 공개 순위 필드만 반환합니다.
+Vercel Functions의 `/api/leaderboard`와 Firebase **261123 leadder** 프로젝트의 **Cloud Firestore**를 사용합니다. 프로젝트 ID는 `leadder-d2ca1`이며, Firestore와 함수는 서울 리전을 사용합니다. 브라우저가 DB에 직접 접근하지 않고 서버 API가 공개 순위 필드만 반환합니다.
 
-순위 읽기는 최신 저장 내용을 직접 조회하고, 쓰기는 ETag 조건부 갱신과 충돌 재시도로 동시 등록에 의한 덮어쓰기를 방지합니다. 서명 키와 참가자 ID는 공개 응답에 포함하지 않습니다. 저장소 연결은 `BLOB_STORE_ID`와 Vercel의 단기 OIDC 인증을 사용하며 저장소 토큰을 HTML에 넣지 않습니다.
+Firestore의 `stairsLeaderboard` 컬렉션에 순위 문서와 서버 서명 키를 보관합니다. 읽기는 서버 SDK로 최신 내용을 조회하고, 쓰기는 문서 updateTime 조건부 갱신과 충돌 재시도로 동시 등록에 의한 덮어쓰기를 방지합니다. 서명 키와 참가자 ID는 공개 응답에 포함하지 않습니다. 브라우저 보안 규칙은 직접 읽기·쓰기를 차단하며 서버 전용 서비스 계정의 IAM 권한으로만 접근합니다.
 
-프로덕션과 미리보기는 별도 경로에 기록합니다. 최고 기록 상위 1,000개를 보관하고 그중 50개를 표시합니다. 게임 시작 시 서버가 발급한 서명 티켓, 점수 형식·시간·코인 범위, 중복 등록 등을 검사합니다. 이는 기본 검증이며 브라우저 게임의 모든 입력을 서버에서 재현하는 완전한 부정행위 방지는 아닙니다.
+서버 인증은 Vercel OIDC와 Google Workload Identity Federation을 사용합니다. Google Cloud에서 계단 게임의 Vercel 프로젝트만 허용하도록 전용 공급자와 서비스 계정을 연결한 뒤 배포해야 합니다. 서비스 계정 키 파일·비공개 키는 발급하거나 HTML·GitHub에 넣지 않습니다. 다른 Firebase 프로젝트 또는 다른 프로젝트의 서비스 계정은 코드에서 거부합니다. Firestore 접근 권한이 없는 경우 다른 저장소에 기록한 뒤 성공했다고 응답하지 않습니다.
+
+Vercel 환경 변수는 `FIREBASE_PROJECT_ID=leadder-d2ca1`, `GCP_PROJECT_NUMBER`, `GCP_SERVICE_ACCOUNT_EMAIL`, `GCP_WORKLOAD_IDENTITY_POOL_ID`, `GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID`이며 모두 연결 위치를 나타내는 설정입니다. 짧은 수명의 OIDC 토큰은 요청할 때 Vercel이 제공합니다.
+
+기존 Blob 저장소에 기록이 있으면 Firestore 문서가 비어 있을 때 한 번만 복사합니다. 참가자 쿠키를 검증하는 기존 서명 키도 함께 이전하므로 기존 사용자의 최고 기록을 유지합니다. Blob 의존성은 이 이전용 읽기에만 사용하고, 새 기록은 Firestore에 저장합니다.
+
+프로덕션과 미리보기는 별도 문서에 기록합니다. 최고 기록 상위 1,000개를 보관하고 그중 50개를 표시합니다. 한 문서가 Firestore 크기 제한에 도달하지 않도록 등록 영수증과 문서 크기를 제한합니다. 게임 시작 시 서버가 발급한 서명 티켓, 점수 형식·시간·코인 범위, 중복 등록 등을 검사합니다. 이는 기본 검증이며 브라우저 게임의 모든 입력을 서버에서 재현하는 완전한 부정행위 방지는 아닙니다.
 
 ## 실행
 

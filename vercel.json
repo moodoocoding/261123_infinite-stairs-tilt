@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["iad1"],
+  "regions": ["icn1"],
   "functions": { "api/leaderboard.js": { "maxDuration": 30 } },
   "headers": [
     {

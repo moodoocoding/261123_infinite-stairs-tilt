@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only the server SDK's IAM identity accesses these documents.
+    // Public leaderboard fields are exposed through /api/leaderboard.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

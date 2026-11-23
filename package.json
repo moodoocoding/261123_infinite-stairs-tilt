@@ -4,8 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test qa/leaderboard-tests.mjs && node qa/sensor-tests.cjs"
+    "test": "node --test qa/leaderboard-tests.mjs qa/firestore-store-tests.mjs && node qa/sensor-tests.cjs"
   },
-  "dependencies": { "@vercel/blob": "2.9.0" },
+  "dependencies": {
+    "@google-cloud/firestore": "9.4.1",
+    "@vercel/blob": "2.9.0",
+    "@vercel/oidc": "4.0.9",
+    "google-auth-library": "11.3.4"
+  },
   "overrides": { "zod": "4.6.7" }
 }
